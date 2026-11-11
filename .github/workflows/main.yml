@@ -1,0 +1,25 @@
+name: Build Aroma WPS
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build Wii U plugin
+        run: |
+          docker build -t yoshi-wps-builder .
+          docker run --rm -v "$PWD:/project" -w /project yoshi-wps-builder make
+
+      - name: Upload WPS file
+        uses: actions/upload-artifact@v4
+        with:
+          name: yoshi_woollyworld_wiimote_b_as_a
+          path: yoshi_woollyworld_wiimote_b_as_a.wps
+          if-no-files-found: error
