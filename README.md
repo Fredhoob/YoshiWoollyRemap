@@ -1,92 +1,43 @@
-# Yoshi's Woolly World — Wii Remote B acts as A (Aroma/WUPS)
+# Yoshi's Woolly World – Wii Remote B as A
 
-**Status: source project; NOT console-tested or compiled to `.wps` in the authoring environment.**
+A lightweight **Aroma plugin for Yoshi's Woolly World (Wii U)** that makes the underside **B trigger on a horizontal Wii Remote perform the same action as the A button**.
 
-## Behavior
+Both A and B can now be used for the same action, making the controls more comfortable.
 
-When the native Wii U **Yoshi's Woolly World** title is running, a Wii Remote
-with **no Nunchuk/Classic attachment** behaves like this:
+**Successfully tested on a real Wii U running Aroma.**
 
-- Physical **A** = Wii Remote A (unchanged).
-- Physical underside **B** = Wii Remote A (B's original function is suppressed).
-- 1, 2, D-pad, +, -, Home = unchanged.
-- Wii U GamePad, Pro Controller, Classic Controller, Nunchuk = unchanged.
-- All other games = unchanged.
-- Both Wii Remotes in local co-op are affected (when used without extensions).
+## Download & Installation
 
-The plugin recognizes the game's regional IDs:
+1. **[Download the latest release](../../releases/latest)** and get `yoshi_woollyworld_wiimote_b_as_a.wps` from the Assets section.
+2. Copy the `.wps` file to your Wii U SD card:
+   `sd:/wiiu/environments/aroma/plugins/`
+3. Restart your Wii U and boot into Aroma.
+4. Launch **Yoshi's Woolly World** and play with a horizontal Wii Remote.
 
-| Region | Title ID |
-| --- | --- |
-| Japan | `0005000010131F00` |
-| USA | `0005000010184D00` |
-| Europe | `0005000010184E00` |
+No additional configuration or game-file modifications are required.
 
-**Sideways limitation:** Hardware does not expose a reliable *sideways-mode*
-flag. This is restricted to **bare Wii Remotes in Woolly World**, which is the
-horizontal Wii Remote mode in the game. It doesn't try to infer angle from
-noisy accelerometer values.
+## Features
 
-## Build on a computer with Docker
+- **B → A:** The underside Wii Remote B trigger acts as A.
+- **A unchanged:** The original A button continues working normally.
+- **Game-specific:** Remapping is active only in Yoshi's Woolly World.
+- **Other controls unchanged:** D-pad, 1, 2, +, − and Home retain their normal functions.
+- **Other controllers unaffected:** Wii U GamePad, Pro Controller and extension controllers retain their original inputs.
+- **Multiplayer support:** Designed to handle multiple Wii Remotes independently.
 
-```bash
-docker build -t yoshi-wps-builder .
-docker run --rm -v "$PWD:/project" -w /project yoshi-wps-builder make
-```
+## Compatibility
 
-Output: `yoshi_woollyworld_wiimote_b_as_a.wps`.
+- Requires a Wii U running **Aroma**.
+- Designed for standard Wii Remotes and Wii Remote Plus without attached extensions.
+- Supports the game's Japanese, North American and European title IDs.
+- Successfully tested in-game with a Wii Remote on real hardware.
 
-Or upload this project as a GitHub repo, select **Actions → Build Aroma WPS →
-Run workflow**, then download the `.wps` from the successful run's artifact.
+**Note:** The original B-trigger function (locking the aiming cursor) is replaced. Multiplayer, all regional versions and compatibility with every other Aroma plugin have not yet been fully tested.
 
-The build requires the Wii U **devkitPPC/wut and WUPS toolchain**. The included
-Dockerfile pins the upstream containers used by a working public WUPS plugin.
-No third-party game files are needed.
+## Uninstallation
 
-### Windows PowerShell with Docker Desktop
+Delete `yoshi_woollyworld_wiimote_b_as_a.wps` from your Aroma plugins folder and restart your Wii U.
 
-From the extracted project folder:
+---
 
-```powershell
-docker build -t yoshi-wps-builder .
-docker run --rm -v "${PWD}:/project" -w /project yoshi-wps-builder make
-```
-
-If Docker is unavailable, the included GitHub Actions workflow can build the
-`.wps` on a hosted Linux runner instead.
-
-## Install (after a successful build)
-
-1. Copy `yoshi_woollyworld_wiimote_b_as_a.wps` to
-   `sd:/wiiu/environments/aroma/plugins/`.
-2. Boot Aroma. Do not install it to NAND or modify the game files.
-3. Start Yoshi's Woolly World, choose horizontal Wii Remote controls, and test
-   B on a simple, safe level before relying on it.
-4. To roll back, power off, remove the `.wps` from that SD folder, and reboot.
-
-## Compatibility caveats
-
-The source hooks four `padscore.rpl` read APIs (`KPADRead`, `KPADReadEx`,
-`KPADGetUnifiedWpadStatus`, `WPADRead`), following patterns from
-`jgardia96/classic-con-wiiu`. These APIs are plausible for the game, but the
-actual calls made by Yoshi's Woolly World have **not been verified on hardware**.
-The game might read input through another route. A test on the actual Wii U is
-necessary before calling this a working mod. If there are conflicting Aroma
-input plugins, disable those temporarily for diagnosis.
-
-## Sources
-
-- WUPS: https://github.com/wiiu-env/WiiUPluginSystem
-- wut padscore API: https://github.com/devkitPro/wut
-- Reference plugin: https://github.com/jgardia96/classic-con-wiiu
-- Title database: https://wiiubrew.org/wiki/Title_database
-
-## Local pure logic test
-
-```bash
-g++ -std=c++20 -Wall -Wextra -pedantic tests/test_remap.cpp -o test_remap
-./test_remap
-```
-
-This only validates the button transformation and does **not** test WUPS
-integration or Wii U behavior.
+*Unofficial community-made plugin. Not affiliated with Nintendo.*
